@@ -40,11 +40,6 @@ img {
   transition: width 0.3s ease, height 0.3s ease;
 }
 
-.gallery-image:hover {
-  width: 376px;
-  height: 208px;
-}
-
 .modal-container {
   position: relative;
   width: 1112px;
