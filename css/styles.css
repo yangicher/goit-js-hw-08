@@ -13,9 +13,15 @@ img {
   display: block;
 }
 
+body, html {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .gallery {
   width: fit-content;
-  margin: 0 auto;
   padding-top: 24px;
   display: grid;
   grid-template-columns: repeat(3, 360px);
