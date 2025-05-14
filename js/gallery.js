@@ -64,73 +64,31 @@ const images = [
     },
   ];  
 
-const gallery = document.querySelector('.gallery');
-let currentIndex = 0;
+const gallery = document.querySelector(".gallery");
+const markup = images
+  .map(
+    (image) => `
+    <li class="gallery-item">
+        <a class="gallery-link" href="${image.original}">
+            <img
+                class="gallery-image"
+                src="${image.preview}"
+                data-source="${image.original}"
+                alt="${image.description}"
+            />
+        </a>
+    </li>`
+  )
+  .join("");
 
-function update(instance) {
-  const { original, description } = images[currentIndex];
-  const img = instance.element().querySelector('img');
-  const slideCounter = instance.element().querySelector('.slide-counter')
-  const descriptionText = instance.element().querySelector('.description-text')
-  img.src = original;
-  img.alt = description;
-  slideCounter.innerText = `slide: ${currentIndex + 1}/${images.length}`
-  descriptionText.innerText = description
-}
-
-function create(index) {
-  const { original, description } = images[index];
-
-  const instance = basicLightbox.create(`
-    <div class="modal-container">
-      <button class="prev-btn">&#10216;</button>
-      <div class="img-container">
-        <img src="${original}" alt="${description}"/>
-        <div class="description-wrapper">
-          <p class="description-text">${description}</p>
-        </div>
-      </div>
-      <button class="next-btn">&#10217;</button>
-      <p class="slide-counter">slide: ${index + 1}/${images.length}</p>
-    </div>
-  `, {
-    onShow: (instance) => {
-      instance.element().querySelector('.prev-btn').onclick = () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        update(instance);
-      };
-      instance.element().querySelector('.next-btn').onclick = () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        update(instance);
-      };
-    }
-  });
-
-  return instance;
-}
-
-const markup = images.map(({ preview, original, description }) => 
-`<li class="gallery-item">
-  <a class="gallery-link" href="large-image.jpg">
-    <img
-      class="gallery-image"
-      src="small-image.jpg"
-      data-source="large-image.jpg"
-      alt="Image description"
-    />
-  </a>
-</li>`).join('');
-
-gallery.innerHTML = markup;
-
-gallery.addEventListener('click', event => {
+gallery.insertAdjacentHTML("beforeend", markup);
+gallery.addEventListener("click", (event) => {
   event.preventDefault();
-  const target = event.target;
+  const image = event.target;
+  if (image.nodeName !== "IMG") return;
+  const largeImageURL = image.dataset.source;
+  const instance = basicLightbox.create(`
+    <img src="${largeImageURL}" width="800" height="600">`);
 
-  if (target.nodeName !== 'IMG') return;
-
-  currentIndex = images.findIndex(img => img.original === target.dataset.source);
-  const instance = create(currentIndex);
-  
-  instance.show()
+  instance.show();
 });
